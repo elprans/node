@@ -1,6 +1,7 @@
 {
   'variables': {
     'v8_use_snapshot%': 'false',
+    'v8_gyp_path%': 'deps/v8/tools/gyp/v8.gyp',
     'node_use_dtrace%': 'false',
     'node_use_lttng%': 'false',
     'node_use_etw%': 'false',
@@ -127,6 +128,8 @@
 
       'dependencies': [
         'node_js2c#host',
+        '<(v8_gyp_path):v8',
+        '<(v8_gyp_path):v8_libplatform'
       ],
 
       'include_dirs': [
@@ -258,8 +261,8 @@
         }],
         [ 'node_use_bundled_v8=="true"', {
           'dependencies': [
-            'deps/v8/tools/gyp/v8.gyp:v8',
-            'deps/v8/tools/gyp/v8.gyp:v8_libplatform'
+            '<(v8_gyp_path):v8',
+            '<(v8_gyp_path):v8_libplatform'
           ],
         }],
         [ 'node_use_v8_platform=="true"', {
@@ -869,13 +872,13 @@
         }],
         [ 'node_use_v8_platform=="true"', {
           'dependencies': [
-            'deps/v8/tools/gyp/v8.gyp:v8_libplatform',
+            '<(v8_gyp_path):v8_libplatform',
           ],
         }],
         [ 'node_use_bundled_v8=="true"', {
           'dependencies': [
-            'deps/v8/tools/gyp/v8.gyp:v8',
-            'deps/v8/tools/gyp/v8.gyp:v8_libplatform'
+            '<(v8_gyp_path):v8',
+            '<(v8_gyp_path):v8_libplatform'
           ],
         }],
       ]
