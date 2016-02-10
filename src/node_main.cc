@@ -91,6 +91,7 @@ namespace node {
   extern bool linux_at_secure;
 }  // namespace node
 
+#include <stdlib.h>
 int main(int argc, char *argv[]) {
 #if defined(__POSIX__) && defined(NODE_SHARED_MODE)
   // In node::PlatformInit(), we squash all signal handlers for non-shared lib
@@ -121,6 +122,9 @@ int main(int argc, char *argv[]) {
   // calls elsewhere in the program (e.g., any logging from V8.)
   setvbuf(stdout, nullptr, _IONBF, 0);
   setvbuf(stderr, nullptr, _IONBF, 0);
+#ifdef ELECTRON_NODE_BUILD_NO_ASAR
+  setenv("_ELECTRON_BUILD_NO_ASAR", "1", 1);
+#endif
   return node::Start(argc, argv);
 }
 #endif

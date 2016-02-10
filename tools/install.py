@@ -162,6 +162,9 @@ def headers(action):
   action([
     'common.gypi',
     'config.gypi',
+    'src/callback_scope.h',
+    'src/core.h',
+    'src/exceptions.h',
     'src/node.h',
     'src/node_api.h',
     'src/node_api_types.h',

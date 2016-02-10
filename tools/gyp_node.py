@@ -13,6 +13,7 @@ import gyp
 output_dir = os.path.join(os.path.abspath(node_root), 'out')
 
 def run_gyp(args):
+  return
   # GYP bug.
   # On msvs it will crash if it gets an absolute path.
   # On Mac/make it will crash if it doesn't get an absolute path.

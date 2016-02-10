@@ -1,4 +1,7 @@
 {
+  'includes': [
+    'config.gypi'
+  ],
   'variables': {
     'v8_use_snapshot%': 'false',
     'v8_trace_maps%': 0,
@@ -18,6 +21,7 @@
     'node_shared_nghttp2%': 'false',
     'node_use_openssl%': 'true',
     'node_shared_openssl%': 'false',
+    'node_v8_path%': 'deps/v8',
     'node_v8_options%': '',
     'node_enable_v8_vtunejit%': 'false',
     'node_core_target_name%': 'node',
@@ -297,6 +301,7 @@
       ],
 
       'include_dirs': [
+        '<(node_v8_path)/include',
         'src',
         '<(SHARED_INTERMEDIATE_DIR)' # for node_natives.h
       ],
@@ -591,6 +596,14 @@
           ],
         }],
       ],
+
+      'link_settings': {
+        'ldflags': [
+          '-Wl,-rpath=\$$ORIGIN/',
+          # Make native module dynamic loading work.
+          '-rdynamic',
+        ],
+      },
     },
     {
       'target_name': 'mkssldef',
