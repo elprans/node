@@ -17,6 +17,7 @@
     'node_shared_libuv%': 'false',
     'node_use_openssl%': 'true',
     'node_shared_openssl%': 'false',
+    'node_v8_path%': 'deps/v8',
     'node_v8_options%': '',
     'node_enable_v8_vtunejit%': 'false',
     'node_core_target_name%': 'node',
@@ -146,6 +147,7 @@
       ],
 
       'include_dirs': [
+        '<(node_v8_path)/include',
         'src',
         'tools/msvs/genfiles',
         'deps/uv/src/ares',
@@ -261,6 +263,13 @@
         'V8_DEPRECATION_WARNINGS=1',
       ],
 
+      'link_settings': {
+        'ldflags': [
+          '-Wl,-rpath=\$$ORIGIN/',
+          # Make native module dynamic loading work.
+          '-rdynamic',
+        ],
+      },
 
       'conditions': [
         [ 'node_shared=="false"', {
@@ -949,11 +958,6 @@
               ]
             }]
           ]
-        }],
-        [ 'node_use_v8_platform=="true"', {
-          'dependencies': [
-            'deps/v8/src/v8.gyp:v8_libplatform',
-          ],
         }],
         [ 'node_use_bundled_v8=="true"', {
           'dependencies': [
