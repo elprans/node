@@ -193,6 +193,27 @@ shared_optgroup.add_option('--shared-http-parser-libpath',
     dest='shared_http_parser_libpath',
     help='a directory to search for the shared http_parser DLL')
 
+shared_optgroup.add_option('--shared-nghttp2',
+    action='store_true',
+    dest='shared_libnghttp2',
+    help='link to a shared nghttp2 DLL instead of static linking')
+
+shared_optgroup.add_option('--shared-nghttp2-includes',
+    action='store',
+    dest='shared_libnghttp2_includes',
+    help='directory containing nghttp2 header files')
+
+shared_optgroup.add_option('--shared-nghttp2-libname',
+    action='store',
+    dest='shared_libnghttp2_libname',
+    default='nghttp2',
+    help='alternative lib name to link to [default: %default]')
+
+shared_optgroup.add_option('--shared-nghttp2-libpath',
+    action='store',
+    dest='shared_libnghttp2_libpath',
+    help='a directory to search for the shared nghttp2 DLL')
+
 shared_optgroup.add_option('--shared-libuv',
     action='store_true',
     dest='shared_libuv',
@@ -936,13 +957,12 @@ def configure_node(o):
   node_module_version = getmoduleversion.get_version()
 
   if sys.platform == 'darwin':
-    shlib_suffix = '%s.dylib'
+    shlib_suffix = 'dylib'
   elif sys.platform.startswith('aix'):
-    shlib_suffix = '%s.a'
+    shlib_suffix = 'a'
   else:
-    shlib_suffix = 'so.%s'
+    shlib_suffix = 'so'
 
-  shlib_suffix %= node_module_version
   o['variables']['node_module_version'] = int(node_module_version)
   o['variables']['shlib_suffix'] = shlib_suffix
 
@@ -1405,6 +1425,7 @@ flavor = GetFlavor(flavor_params)
 configure_node(output)
 configure_library('zlib', output)
 configure_library('http_parser', output)
+configure_library('libnghttp2', output)
 configure_library('libuv', output)
 configure_library('libcares', output)
 # stay backwards compatible with shared cares builds

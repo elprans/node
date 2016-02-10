@@ -63,6 +63,7 @@
 #include "req-wrap-inl.h"
 #include "string_bytes.h"
 #include "tracing/agent.h"
+#include "tracing/trace_event.h"
 #include "util.h"
 #include "uv.h"
 #if NODE_USE_V8_PLATFORM

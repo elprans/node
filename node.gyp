@@ -1,4 +1,7 @@
 {
+  'includes': [
+    'config.gypi'
+  ],
   'variables': {
     'v8_use_snapshot%': 'false',
     'v8_trace_maps%': 0,
@@ -14,10 +17,12 @@
     'node_module_version%': '',
     'node_shared_zlib%': 'false',
     'node_shared_http_parser%': 'false',
+    'node_shared_libnghttp2%': 'false',
     'node_shared_cares%': 'false',
     'node_shared_libuv%': 'false',
     'node_use_openssl%': 'true',
     'node_shared_openssl%': 'false',
+    'node_v8_path%': 'deps/v8',
     'node_v8_options%': '',
     'node_enable_v8_vtunejit%': 'false',
     'node_core_target_name%': 'node',
@@ -162,7 +167,14 @@
 
       'dependencies': [
         'node_js2c#host',
-        'deps/nghttp2/nghttp2.gyp:nghttp2'
+      ],
+
+      'conditions': [
+        [ 'node_shared_libnghttp2=="false"', {
+          'dependencies': [
+            'deps/nghttp2/nghttp2.gyp:nghttp2'
+          ]
+        }]
       ],
 
       'includes': [
@@ -170,10 +182,10 @@
       ],
 
       'include_dirs': [
+        '<(node_v8_path)/include',
         'src',
         'tools/msvs/genfiles',
-        '<(SHARED_INTERMEDIATE_DIR)', # for node_natives.h
-        'deps/nghttp2/lib/includes'
+        '<(SHARED_INTERMEDIATE_DIR)' # for node_natives.h
       ],
 
       'sources': [
@@ -293,6 +305,14 @@
         # Warn when using deprecated V8 APIs.
         'V8_DEPRECATION_WARNINGS=1',
       ],
+
+      'link_settings': {
+        'ldflags': [
+          '-Wl,-rpath=\$$ORIGIN/',
+          # Make native module dynamic loading work.
+          '-rdynamic',
+        ],
+      },
     },
     {
       'target_name': 'mkssldef',
@@ -716,11 +736,6 @@
             }]
           ]
         }],
-        [ 'node_use_v8_platform=="true"', {
-          'dependencies': [
-            'deps/v8/src/v8.gyp:v8_libplatform',
-          ],
-        }],
         [ 'node_use_dtrace=="true" and OS!="mac" and OS!="linux"', {
           'copies': [{
             'destination': '<(OBJ_DIR)/cctest/src',
@@ -729,6 +744,12 @@
               '<(OBJ_PATH)<(OBJ_SEPARATOR)node_dtrace_provider.<(OBJ_SUFFIX)',
               '<(OBJ_PATH)<(OBJ_SEPARATOR)node_dtrace.<(OBJ_SUFFIX)',
             ]},
+	  ],
+	}],
+        [ 'node_use_bundled_v8=="true"', {
+          'dependencies': [
+            'deps/v8/src/v8.gyp:v8',
+            'deps/v8/src/v8.gyp:v8_libplatform'
           ],
         }],
         ['OS=="solaris"', {
