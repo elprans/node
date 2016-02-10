@@ -189,6 +189,9 @@ def run(args):
   if os.environ.get('HEADERS_ONLY'):
     if cmd == 'install': return headers(install)
     if cmd == 'uninstall': return headers(uninstall)
+  elif os.environ.get('NPM_ONLY'):
+    if cmd == 'install': return npm_files(install)
+    if cmd == 'uninstall': return npm_files(uninstall)
   else:
     if cmd == 'install': return files(install)
     if cmd == 'uninstall': return files(uninstall)
