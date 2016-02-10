@@ -1,6 +1,7 @@
 {
   'variables': {
     'v8_use_snapshot%': 'false',
+    'v8_gyp_path%': 'deps/v8/tools/gyp/v8.gyp',
     'node_use_dtrace%': 'false',
     'node_use_lttng%': 'false',
     'node_use_etw%': 'false',
@@ -107,8 +108,8 @@
       'dependencies': [
         'node_js2c#host',
         'deps/cares/cares.gyp:cares',
-        # 'deps/v8/tools/gyp/v8.gyp:v8',
-        # 'deps/v8/tools/gyp/v8.gyp:v8_libplatform'
+        '<(v8_gyp_path):v8',
+        '<(v8_gyp_path):v8_libplatform'
       ],
 
       'include_dirs': [
