@@ -53,21 +53,10 @@
       'type': 'none',
       'dependencies': ['protocol_version'],
       'variables': {
-        'conditions': [
-          ['debug_devtools=="node"', {
-              # Node build
-              'jinja_module_files': [
-                '../../../jinja2/jinja2/__init__.py',
-                '../../../markupsafe/markupsafe/__init__.py',  # jinja2 dep
-              ],
-            }, {
               'jinja_module_files': [
                 '<(DEPTH)/third_party/jinja2/__init__.py',
                 '<(DEPTH)/third_party/markupsafe/__init__.py',  # jinja2 dep
               ],
-            }
-          ],
-        ],
       },
       'actions': [
         {
