@@ -40,8 +40,10 @@ int wmain(int argc, wchar_t *wargv[]) {
 }
 #else
 // UNIX
+#include <stdlib.h>
 int main(int argc, char *argv[]) {
   setvbuf(stderr, NULL, _IOLBF, 1024);
+  putenv("ELECTRON_NODE_DISABLE_ASAR_SUPPORT=1");
   return node::Start(argc, argv);
 }
 #endif
