@@ -4232,13 +4232,13 @@ static void StartNodeInstance(void* arg) {
       SealHandleScope seal(isolate);
       bool more;
       do {
-#if 0
+#if 1
         v8::platform::PumpMessageLoop(default_platform, isolate);
 #endif
         more = uv_run(env->event_loop(), UV_RUN_ONCE);
 
         if (more == false) {
-#if 0
+#if 1
           v8::platform::PumpMessageLoop(default_platform, isolate);
 #endif
           EmitBeforeExit(env);
@@ -4299,7 +4299,7 @@ int Start(int argc, char** argv) {
   V8::SetEntropySource(crypto::EntropySource);
 #endif
 
-#if 0
+#if 1
   default_platform = v8::platform::CreateDefaultPlatform(v8_thread_pool_size);
   V8::InitializePlatform(default_platform);
   V8::Initialize();
@@ -4319,7 +4319,7 @@ int Start(int argc, char** argv) {
   }
   V8::Dispose();
 
-#if 0
+#if 1
   delete default_platform;
   default_platform = nullptr;
 #endif
