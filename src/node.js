@@ -40,7 +40,9 @@
     startup.globalConsole();
     }  // not isRenderer
 
+    if (!process.env.ELECTRON_NODE_DISABLE_ASAR_SUPPORT) {
     startup.initAsarSupport();
+    }
 
     startup.processAssert();
     startup.processConfig();

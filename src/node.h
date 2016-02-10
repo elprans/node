@@ -211,6 +211,11 @@ NODE_EXTERN Environment* CreateEnvironment(v8::Isolate* isolate,
                                            int exec_argc,
                                            const char* const* exec_argv);
 
+NODE_EXTERN void StartNodeInstance(void* arg,
+                                   v8::Isolate* isolate,
+                                   void* arrbuf_alloc);
+
+NODE_EXTERN void PlatformInit();
 
 NODE_EXTERN void EmitBeforeExit(Environment* env);
 NODE_EXTERN int EmitExit(Environment* env);

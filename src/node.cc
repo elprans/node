@@ -3684,7 +3684,7 @@ static void DebugEnd(const FunctionCallbackInfo<Value>& args) {
 }
 
 
-inline void PlatformInit() {
+void PlatformInit() {
 #ifdef __POSIX__
   sigset_t sigmask;
   sigemptyset(&sigmask);
@@ -4041,11 +4041,24 @@ Environment* CreateEnvironment(Isolate* isolate,
 // Entry point for new node instances, also called directly for the main
 // node instance.
 static void StartNodeInstance(void* arg) {
-  NodeInstanceData* instance_data = static_cast<NodeInstanceData*>(arg);
   Isolate::CreateParams params;
   ArrayBufferAllocator* array_buffer_allocator = new ArrayBufferAllocator();
   params.array_buffer_allocator = array_buffer_allocator;
   Isolate* isolate = Isolate::New(params);
+  StartNodeInstance(arg, isolate, array_buffer_allocator);
+  CHECK_NE(isolate, nullptr);
+  isolate->Dispose();
+  isolate = nullptr;
+  delete array_buffer_allocator;
+}
+
+
+void StartNodeInstance(void* arg, Isolate* isolate, void* arrbuf_alloc)
+{
+  NodeInstanceData* instance_data = static_cast<NodeInstanceData*>(arg);
+  ArrayBufferAllocator* array_buffer_allocator =
+    static_cast<ArrayBufferAllocator*>(arrbuf_alloc);
+
   if (track_heap_objects) {
     isolate->GetHeapProfiler()->StartTrackingHeapObjects(true);
   }
@@ -4061,7 +4074,9 @@ static void StartNodeInstance(void* arg) {
     HandleScope handle_scope(isolate);
     Local<Context> context = Context::New(isolate);
     Environment* env = CreateEnvironment(isolate, context, instance_data);
-    array_buffer_allocator->set_env(env);
+    if (array_buffer_allocator != nullptr) {
+      array_buffer_allocator->set_env(env);
+    }
     Context::Scope context_scope(context);
 
 #if 0
@@ -4116,7 +4131,9 @@ static void StartNodeInstance(void* arg) {
     __lsan_do_leak_check();
 #endif
 
-    array_buffer_allocator->set_env(nullptr);
+    if (array_buffer_allocator != nullptr) {
+      array_buffer_allocator->set_env(nullptr);
+    }
     env->Dispose();
     env = nullptr;
   }
@@ -4125,11 +4142,6 @@ static void StartNodeInstance(void* arg) {
     // Synchronize with signal handler, see TryStartDebugger.
     while (isolate != node_isolate.exchange(nullptr));  // NOLINT
   }
-
-  CHECK_NE(isolate, nullptr);
-  isolate->Dispose();
-  isolate = nullptr;
-  delete array_buffer_allocator;
 }
 
 int Start(int argc, char** argv) {
